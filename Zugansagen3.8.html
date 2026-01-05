@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zug-Ansagen System</title>
+  <style>
+    footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9em;
+      color: #777;
+      margin-top: 40px;
+      background-color: transparent;
+      position: static; /* ← Wichtig */
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1 {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      margin: 0;
+      font-size: 2.5em;
+    }
+
+    h2 {
+      margin-top: 30px;
+      font-size: 1.8em;
+      color: #444;
+    }
+
+    button {
+      padding: 15px 30px;
+      margin: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 80%;
+      max-width: 350px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .container {
+      padding: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #fff;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+
+    .back-button {
+      margin-top: 30px;
+      padding: 12px 25px;
+      background-color: #777;
+      border-radius: 8px;
+      color: white;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .back-button:hover {
+      background-color: #666;
+    }
+
+    .credits {
+    margin-top: 40px;
+    padding: 15px;
+    background-color: #eaeaea;
+    border-top: 2px solid #ccc;
+    border-bottom: 2px solid #ccc;
+    font-size: 1.1em;
+    color: #444;
+    }
+
+    .label {
+     font-size: 0.9em;
+     font-weight: bold;
+     color: #888;
+     margin-top: 22px;
+    }
+
+  </style>
+
+</head>
+
+<input type="text" id="search" placeholder="🔍 Ansage suchen... (Zuerst Linie wählen!!)" onkeyup="filterButtons()" style="width:100%;padding:8px;margin:10px 0;">
+
+<script>
+function filterButtons() {
+  const filter = document.getElementById("search").value.toLowerCase();
+  document.querySelectorAll("button").forEach(btn => {
+    const text = btn.innerText.toLowerCase();
+    btn.style.display = text.includes(filter) ? "block" : "none";
+  });
+}
+</script>
+
+<body>
+
+  <h1>🎤 Zug-Ansagen System</h1>
+
+  <!-- Hauptmenü -->
+  <div id="main-menu" class="container">
+    <button onclick="showSection('info')">Informations-Ansagen</button>
+    <button onclick="showSection('s1')" style="background-color:#FF9800;">🚧 S1 (AVG) Ansagen 🚧 (Teilweise verfügbar)</button>
+    <button onclick="showSection('s3')" style="background-color:#C084FF;">🚧 S3 (S-Bahn RN) [BETA] Ansagen 🚧 (Im Bau)</button>
+    <button onclick="showSection('s4')" style="background-color:#FF9800;">🚧 S4 (AVG) Ansagen 🚧 (Teilweise verfügbar)</button>
+    <button onclick="showSection('s5')">S5 (AVG) Ansagen</button>
+    <button onclick="showSection('s6')" style="background-color:#FF9800;">🚧 S6 (AVG) Ansagen 🚧 (Im Bau)</button>
+    <button onclick="showSection('s7')" style="background-color:#FF9800;">🚧 S7 (AVG) Ansagen 🚧 (Im Bau)</button>
+    <button onclick="showSection('s8')" style="background-color:#FF9800;">🚧 S8 (AVG) Ansagen 🚧 (Im Bau)</button>
+    <button onclick="showSection('s11')" style="background-color:#FF9800;">🚧 S11 (AVG) Ansagen 🚧 (Teilweise verfügbar  )</button>
+    <button onclick="showSection('s31')">S31 (AVG) Ansagen</button>
+    <button onclick="showSection('s32')">S32 (AVG) Ansagen</button>
+    <button onclick="showSection('re14b')" style="background-color:#FF9800;">🚧 RE14b (DB Regio) Ansagen 🚧 (Im Bau)</button>
+    <button onclick="showSection('re40')" style="background-color:#FF9800;">🚧 RE40 (DB Regio) Ansagen 🚧 (Im Bau)</button>
+    <button onclick="showSection('rb76')" style="background-color:#FF9800;">🚧 RB76 (HHB) Ansagen 🚧 (Im Bau)</button>
+  </div>
+
+<!-- Info-Ansagen -->
+  <div id="info" class="container" style="display:none;">
+    <h2>Informations-Ansagen</h2>
+    <button onclick="playAnsage('Fahrplanwechsel 2025')">Fahrplanwechsel Dezember-2025</button>
+    <p><p/>
+    <button onclick="playAnsage('Verspätung 5')">Verspätung 5 Minuten</button>
+    <button onclick="playAnsage('Verspätung 10')">Verspätung 10 Minuten</button>
+    <button onclick="playAnsage('Verspätung 15')">Verspätung 15 Minuten</button>
+    <button onclick="playAnsage('Verspätung 20')">Verspätung 20 Minuten</button>
+    <button onclick="playAnsage('Ärztlicher Notfall')">Ärztlicher Notfall</button>
+    <button onclick="playAnsage('Baustelle - Fahrtende')">Baustelle - Fahrtende</button>
+    <button onclick="playAnsage('Begrüßung')">Begrüßung</button>
+    <button onclick="playAnsage('Fahrtausfall')">Fahrtausfall</button>
+    <button onclick="playAnsage('Fahrtende (Normal)')">Fahrtende (Normal)</button>
+    <button onclick="playAnsage('Fahrzeugstörung - Verzögerung')">Fahrzeugstörung - Verzögerung</button>
+    <button onclick="playAnsage('Gegenzug')">Gegenzug</button>
+    <button onclick="playAnsage('Hinterer Zugteil endet')">Hinterer Zugteil endet</button>
+    <button onclick="playAnsage('Notbremse')">Notbremse</button>
+    <button onclick="playAnsage('Störung - Verzögerung')">Störung - Verzögerung</button>
+    <button onclick="playAnsage('Streckenabschnitt durch Zug belegt')">Streckenabschnitt durch Zug belegt</button>
+    <button onclick="playAnsage('Streckensperrung - Fahrtende')">Streckensperrung - Fahrtende</button>
+    <button onclick="playAnsage('Türstörung - Verzögerung')">Türstörung - Verzögerung</button>
+    <button onclick="playAnsage('Überholung')">Überholung</button>
+    <button onclick="playAnsage('Unfall - Fahrtende')">Unfall - Fahrtende</button>
+    <button onclick="playAnsage('Unfall - weiter SEV')">Unfall - weiter SEV</button>
+    <button onclick="playAnsage('Vorderer Zugteil endet')">Vorderer Zugteil endet</button>
+    <button onclick="playAnsage('Warten auf anderen Zug')">Warten auf anderen Zug</button>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+  </div>
+
+ <!-- S31 -->
+  <div id="s31" class="container" style="display:none;">
+    <h2>S31 (AVG) Ansagen</h2>
+    <button onclick="playAnsage('Begrüßung')">Begrüßung</button>
+    <button onclick="playAnsage('Odenheim (Fahrtende)')">Odenheim (Fahrtende)</button>
+    <button onclick="playAnsage('Odenheim West (Bedarf)')">Odenheim West (Bedarf)</button>
+    <button onclick="playAnsage('Zeutern Ost (Bedarf)')">Zeutern Ost (Bedarf)</button>
+    <button onclick="playAnsage('Zeutern')">Zeutern</button>
+    <button onclick="playAnsage('Zeutern Sportplatz (Bedarf)')">Zeutern Sportplatz (Bedarf)</button>
+    <button onclick="playAnsage('Stettfeld')">Stettfeld</button>
+    <button onclick="playAnsage('Ubstadt Uhlandstraße')">Ubstadt Uhlandstraße</button>
+    <button onclick="playAnsage('Ubstadt Ort')">Ubstadt Ort</button>
+    <button onclick="playAnsage('Bruchsal Stegwiesen (Bedarf)')">Bruchsal Stegwiesen (Bedarf)</button>
+    <button onclick="playAnsage('Bruchsal Schlossgarten (Bedarf)')">Bruchsal Schlossgarten (Bedarf)</button>
+    <button onclick="playAnsage('Bruchsal Bf')">Bruchsal Bahnhof</button>
+    <button onclick="playAnsage('Bruchsal GBZ (Bedarf)')">Bruchsal GBZ (Bedarf)</button>
+    <button onclick="playAnsage('Untergrombach')">Untergrombach</button>
+    <button onclick="playAnsage('Weingarten (Baden)')">Weingarten (Baden)</button>
+    <button onclick="playAnsage('Karlsruhe-Durlach')">Karlsruhe-Durlach</button>
+    <button onclick="playAnsage('Karlsruhe Hbf (Fahrtende)')">Karlsruhe Hbf (Fahrtende)</button>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+  </div>
+
+ <!-- S32 -->
+  <div id="s32" class="container" style="display:none;">
+    <h2>S31 (AVG) Ansagen</h2>
+    <button onclick="playAnsage('Begrüßung')">Begrüßung</button>
+    <button onclick="playAnsage('Menzingen (Fahrtende)')">Menzingen (Fahrtende)</button>
+    <button onclick="playAnsage('Bahnbrücken')">Bahnbrücken (Bedarf)</button>
+    <button onclick="playAnsage('Gochsheim')">Gochsheim</button>
+    <button onclick="playAnsage('Münzesheim Ost (Bedarf)')">Münzesheim Ost (Bedarf)</button>
+    <button onclick="playAnsage('Münzesheim')">Münzesheim</button>
+    <button onclick="playAnsage('Oberöwisheim (Bedarf)')">Oberöwisheim (Bedarf)</button>
+    <button onclick="playAnsage('Unteröwisheim')">Unteröwisheim</button>
+    <button onclick="playAnsage('Unteröwisheim M.-Luther-Str. (Bedarf)')">Unteröw. Martin-Luther-Str. (Bedarf)</button>
+    <button onclick="playAnsage('Ubstadt Salzbrunnenstraße (Bedarf)')">Ubstadt Salzbrunnenstr. (Bedarf)</button>
+    <button onclick="playAnsage('Ubstadt Ort (S32)')">Ubstadt Ort</button>
+    <button onclick="playAnsage('Bruchsal Stegwiesen (Bedarf)')">Bruchsal Stegwiesen (Bedarf)</button>
+    <button onclick="playAnsage('Bruchsal Schlossgarten (Bedarf)')">Bruchsal Schlossgarten (Bedarf)</button>
+    <button onclick="playAnsage('Bruchsal Bf')">Bruchsal Bahnhof</button>
+    <button onclick="playAnsage('Bruchsal GBZ (Bedarf)')">Bruchsal GBZ (Bedarf)</button>
+    <button onclick="playAnsage('Untergrombach')">Untergrombach</button>
+    <button onclick="playAnsage('Weingarten (Baden)')">Weingarten (Baden)</button>
+    <button onclick="playAnsage('Karlsruhe-Durlach')">Karlsruhe-Durlach</button>
+    <button onclick="playAnsage('Karlsruhe Hbf (Fahrtende)')">Karlsruhe Hbf (Fahrtende)</button>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+  </div>
+
+   <!-- S5 -->
+  <div id="s5" class="container" style="display:none;">
+    <h2>S5 (AVG) Ansagen</h2>
+    <button onclick="playAnsage('Begrüßung')">Begrüßung</button>
+    <button onclick="playAnsage('Wörth Badepark (Fahrtende)')">Wörth Badepark (Fahrtende)</button>
+    <button onclick="playAnsage('Wörth Badallee (Bedarf)')">Wörth Badallee (Bedarf)</button>
+    <button onclick="playAnsage('Wörth Rathaus (Bedarf)')">Wörth Rathaus (Bedarf)</button>
+    <button onclick="playAnsage('Wörth Bürgerpark (Bedarf)')">Wörth Bürgerpark (Bedarf)</button>
+    <button onclick="playAnsage('Wörth Bienwaldhalle (Bedarf)')">Wörth Bienwaldhalle (Bedarf)</button>
+    <button onclick="playAnsage('Wörth Alte Bahnmeisterei (Bedarf)')">Wörth Alte Bahnmeisterei (Bedarf)</button>
+    <button onclick="playAnsage('Wörth')">Wörth Bahnhof</button>
+    <button onclick="playAnsage('Maximiliansau West (Bedarf)')">Maximiliansau West (Bedarf)</button>
+    <button onclick="playAnsage('Max. Eisenbahnstr. (Bedarf)')">Maximiliansau Eisenbahnstr. (Bedarf)</button>
+    <button onclick="playAnsage('Maxau (Bedarf)')">Maxau (Bedarf)</button>
+    <button onclick="playAnsage('KA Rheinbergstr. (Stadteinwärts)')">Knielingen Rheinbergstr. (Stadteinwärts)</button>
+    <button onclick="playAnsage('KA Rheinbergstr.')">Knielingen Rheinbergstraße</button>
+    <button onclick="playAnsage('KA Rheinbergstr. (Fahrtende)')">KA Rheinbergstr. (Fahrtende)</button>
+    <button onclick="playAnsage('Eggensteiner Straße')">Eggensteiner Straße</button>
+    <button onclick="playAnsage('Herweghstraße')">Herweghstraße</button>
+    <button onclick="playAnsage('Siemens')">Siemens</button>
+    <button onclick="playAnsage('Mühlburg West')">Mühlburg West</button>
+    <button onclick="playAnsage('Starckstraße')">Starckstraße</button>
+    <button onclick="playAnsage('Lameyplatz (S5)')">Lameyplatz</button>
+    <button onclick="playAnsage('Entenfang (S5)')">Entenfang</button>
+    <button onclick="playAnsage('Philippstraße')">Philippstraße</button>
+    <button onclick="playAnsage('Händelstraße')">Händelstraße</button>
+    <button onclick="playAnsage('Yorckstraße (S5)')">Yorckstraße</button>
+    <button onclick="playAnsage('Mühlburger Tor (S5)')">Mühlburger Tor</button>
+    <button onclick="playAnsage('Euro (S5)')">Europaplatz</button>
+    <button onclick="playAnsage('Marktplatz (Kaiserstraße)')">Marktplatz (Kaiserstraße)</button>
+    <button onclick="playAnsage('Kronenplatz (S5)')">Kronenplatz</button>
+    <button onclick="playAnsage('Durlacher Tor')">Durlacher Tor/KIT-Campus Süd</button>
+    <button onclick="playAnsage('Gottesauer Platz')">Gottesauer Platz/BGV</button>
+    <button onclick="playAnsage('Tulla VBK (S5)')">Tullastr./Alter Schlachthof</button>
+    <button onclick="playAnsage('Weinweg')">Weinweg</button>
+    <button onclick="playAnsage('Untermühlstraße (S5)')">Untermühlstraße</button>
+    <button onclick="playAnsage('Durlach Bf (S5)')">Durlach Bahnhof</button>
+    <button onclick="playAnsage('Hubstraße (Bedarf)')">Hubstraße (Bedarf)</button>
+    <button onclick="playAnsage('KA Grötzingen')">Grötzingen</button>
+    <button onclick="playAnsage('Oberausstraße')">Oberausstraße</button>
+    <button onclick="playAnsage('Krappmühlenweg')">Krappmühlenweg</button>
+    <button onclick="playAnsage('Berghausen Pfinzbrücke (Bedarf)')">Berghausen Pfinzbrücke (Bedarf)</button>
+    <button onclick="playAnsage('Berghausen')">Berghausen</button>
+    <button onclick="playAnsage('Am Stadion (Bedarf)')">Am Stadion (Bedarf)</button>
+    <button onclick="playAnsage('Söllingen Reetzstr. (Bedarf)')">Söllingen Reetzstraße (Bedarf)</button>
+    <button onclick="playAnsage('Söllingen (b. Karlsruhe)(Fahrtende)')">Söllingen (b. Karlsruhe)(Fahrtende)</button>
+    <button onclick="playAnsage('Söllingen (b. Karlsruhe)')">Söllingen (b. Karlsruhe)</button>
+    <button onclick="playAnsage('Söl. Kapellenstraße (Bedarf)')">Söl. Kapellenstraße (Bedarf)</button>
+    <button onclick="playAnsage('Kleinsteinbach')">Kleinsteinbach</button>
+    <button onclick="playAnsage('Wilferdingen-Singen')">Wilferdingen-Singen</button>
+    <button onclick="playAnsage('Königsbach')">Königsbach</button>
+    <button onclick="playAnsage('Bilfingen (Bedarf)')">Bilfingen (Bedarf)</button>
+    <button onclick="playAnsage('Ersingen West (Bedarf)')">Ersingen West (Bedarf)</button>
+    <button onclick="playAnsage('Ersingen (Bedarf)')">Ersingen (Bedarf)</button>
+    <button onclick="playAnsage('Ispringen')">Ispringen</button>
+    <button onclick="playAnsage('Pforzheim (Fahrtende)')">Pforzheim Hbf (Fahrtende)</button>
+    <button onclick="playAnsage('Pforzheim Hbf (weiter S6)')">Pforzheim Hbf (weiter S6)</button>
+    <button class="back-button" onclick="backToMenu()">← Zurück zum Hauptbildschirm</button>
+  </div>
+
+  <!-- S6 -->
+  <div id="s6" class="container" style="display:none; background-color:#FF9800; color:#fff;">
+    <h2>🚧 S6 (AVG) Ansagen</h2>
+    <p>Im Bau – bald verfügbar!</p>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+  </div>
+
+  <!-- S4 -->
+  <div id="s4" class="container" style="display:none; background-color:#FFF3E0; color:#fff;">
+    <h2>🚧 S4 (AVG) Ansagen</h2>
+    <p style="color:#E65100;"><b>Im Bau – einige Ansagen bereits verfügbar!</b></p>
+
+    <button onclick="playAnsage('Böckingen Sonnenbrunnen (Bedarf)')">Böckingen Sonnenbrunnen (Bedarf)</button>
+    <button onclick="playAnsage('Böckingen Berufschulzentrum (Bedarf)')">Böckingen Berufschulzentrum (Bedarf)</button>
+    <button onclick="playAnsage('Böckingen West (Bedarf)')">Böckingen West (Bedarf)</button>
+    <button onclick="playAnsage('Leingarten Ost')">Leingarten Ost</button>
+    <button onclick="playAnsage('Leingarten')">Leingarten</button>
+    <button onclick="playAnsage('Leingarten Mitte (Bedarf)')">Leingarten Mitte (Bedarf)</button>
+    <button onclick="playAnsage('Leingarten West')">Leingarten West</button>
+    <button onclick="playAnsage('Schwaigern Ost (Bedarf)')">Schwaigern Ost (Bedarf)</button>
+    <button onclick="playAnsage('Schwaigern (Württ)')">Schwaigern (Württemberg)</button>
+    <button onclick="playAnsage('Schwaigern West (Bedarf)')">Schwaigern West (Bedarf)</button>
+    <button onclick="playAnsage('Stetten am Heuchelberg')">Stetten am Heuchelberg</button>
+    <button onclick="playAnsage('Gemmingen')">Gemmingen</button>
+    <button onclick="playAnsage('Gemmingen West (Bedarf)')">Gemmingen West (Bedarf)</button>
+    <button onclick="playAnsage('Eppingen')">Eppingen</button>
+    <button onclick="playAnsage('Eppingen West (Bedarf)')">Eppingen West (Bedarf)</button>
+    <button onclick="playAnsage('Sulzbach')">Sulzbach</button>
+    <button onclick="playAnsage('Zaisenhausen')">Zaisenhausen</button>
+    <button onclick="playAnsage('Flehingen')">Flehingen</button>
+    <button onclick="playAnsage('Oberderdingen-Flehingen')">Oberderdingen-Flehingen</button>
+    <button onclick="playAnsage('Bauerbach')">Bauerbach</button>
+    <button onclick="playAnsage('Gölshausen Industriegebiet (Bedarf)')">Gölshausen Industriegebiet (Bedarf)</button>
+    <button onclick="playAnsage('Gölshausen')">Gölshausen</button>
+    <button onclick="playAnsage('Bretten Kupferhälde (Bedarf)')">Bretten Kupferhälde (Bedarf)</button>
+    <button onclick="playAnsage('Bretten Schulzentrum')">Bretten Schulzentrum</button>
+    <button onclick="playAnsage('Bretten Wannenweg')">Bretten Wannenweg</button>
+    <button onclick="playAnsage('Bretten Stadtmitte')">Bretten Stadtmitte</button>
+    <button onclick="playAnsage('Bretten (Baden)')">Bretten (Baden)</button>
+    <button onclick="playAnsage('Bretten-Rinklingen (Bedarf)')">Bretten-Rinklingen (Bedarf)</button>
+    <button onclick="playAnsage('Dürrenbüchig (Bedarf)')">Dürrenbüchig (Bedarf)</button>
+    <button onclick="playAnsage('Wössingen Ost (Bedarf)')">Wössingen Ost (Bedarf)</button>
+    <button onclick="playAnsage('Wössingen (Bedarf)')">Wössingen (Bedarf)</button>
+    <button onclick="playAnsage('Jöhlingen (Bedarf)')">Jöhlingen (Bedarf)</button>
+    <button onclick="playAnsage('Jöhlingen West')">Jöhlingen West</button>
+    <button onclick="playAnsage('Berghausen-Hummelberg (Bedarf)')">Berghausen-Hummelberg (Bedarf)</button>
+    <button onclick="playAnsage('Grötzingen Oberraustraße')">Grötzingen Oberraustraße</button>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+  </div>
+
+  <!-- S1 -->
+<div id="s1" class="container" style="display:none; background-color:#FFF3E0;">
+    <h2>🚧 S1 (AVG) Ansagen</h2>
+    <p style="color:#E65100;"><b>Im Bau – einige Ansagen bereits verfügbar!</b></p>
+
+    <h3>Verfügbare Ansagen</h3>
+    <button onclick="playAnsage('Begrüßung')">Begrüßung</button>
+    <button onclick="playAnsage('Bad Herrenalb (Fahrtende)')">Bad Herrenalb (Fahrtende)</button>
+    <button onclick="playAnsage('Bad Herrenalb Kullenmühle (Bedarf)')">Bad Herrenalb Kullenmühle (Bedarf)</button>
+    <button onclick="playAnsage('Frauenalb-Schielberg')">Frauenalb-Schielberg</button>
+    <button onclick="playAnsage('Marxell')">Marxell</button>
+    <button onclick="playAnsage('Fischweier (Bedarf)')">Fischweier (Bedarf)</button>
+    <button onclick="playAnsage('Etzenrot')">Etzenrot</button>
+    <button onclick="playAnsage('Busenbach (S1)')">Busenbach</button>
+    <button onclick="playAnsage('Ettlingen Spinnerei')">Ettlingen Spinnerei</button>
+    <button onclick="playAnsage('Ettlingen Albgaubad')">Ettlingen Albgaubad</button>
+    <button onclick="playAnsage('Ettlingen Albgaubad (Fahrtende)')">Ettlingen Albgaubad (Fahrtende)</button>
+    <button onclick="playAnsage('Ettlingen Stadt')">Ettlingen Stadt</button>
+    <button onclick="playAnsage('Ettlingen Erbprinz')">Ettlingen Erbprinz</button>
+    <button onclick="playAnsage('Ettlingen Wasen (Normal)')">Ettlingen Wasen (Normal)</button>
+    <button onclick="playAnsage('Ettlingen Wasen (Zugverband)')">Ettlingen Wasen (Ausstieg 1. Fz)</button>
+    <button onclick="playAnsage('Ettlingen Neuwiesenreben (Bedarf)')">Ettlingen Neuwiesenreben (Bedarf)</button>
+    <button onclick="playAnsage('Rüpurr Battstraße')">Rüpurr Battstraße</button>
+    <button onclick="playAnsage('Rüpurr Tulpenstraße')">Rüpurr Tulpenstraße</button>
+    <button onclick="playAnsage('Rüpurr Ostendorfplatz')">Rüpurr Ostendorfplatz</button>
+    <button onclick="playAnsage('Schloss Rüpurr')">Schloss Rüpurr</button>
+    <button onclick="playAnsage('Dammerstock')">Dammerstock</button>
+    <button onclick="playAnsage('KA Albtalbahnhof (S1 Stadteinwärts)')">Albtalbahnhof (Stadteinwärts)</button>
+    <button onclick="playAnsage('KA Albtalbahnhof (S1)')">Albtalbahnhof</button>
+    <p>Hauptbahnhof🚧</p>
+    <button onclick="playAnsage('Poststraße (S1)')">Poststraße</button>
+    <button onclick="playAnsage('Augartenstraße')">Augartenstraße</button>
+    <button onclick="playAnsage('Kongresszentrum')">Kongresszentrum</button>
+    <button onclick="playAnsage('Ettlinger Tor (S1)')">Ettlinger Tor/Staatstheater</button>
+    <button onclick="playAnsage('Marktplatz (P) (S1)')">Marktplatz Pyramide</button>
+    <button onclick="playAnsage('Marktplatz (K) (S1)')">Marktplatz Kaiserstraße</button>
+    <button onclick="playAnsage('Euro (S5)')">Europaplatz</button>
+    <button onclick="playAnsage('Mühlburger Tor (S5)')">Mühlburger Tor</button>
+    <button onclick="playAnsage('Yorckstraße (S1)')">Yorckstraße</button>
+    <button onclick="playAnsage('Moltkestraße (S1)')">Moltkestraße/Städt. Klinikum</button>
+    <button onclick="playAnsage('Knielinger Allee')">Knielinger Allee/Städt. Klinikum</button>
+    <button onclick="playAnsage('August-Bebel-Straße')">August-Bebel-Straße</button>
+    <button onclick="playAnsage('Kurt-Schuhmacher-Straße')">Kurt-Schuhmacher-Straße</button>
+    <button onclick="playAnsage('Haus Bethlehem')">Haus Bethlehem</button>
+    <button onclick="playAnsage('Neureut Welschneureuter Straße')">Neureut Welschneureuter Straße</button>
+    <button onclick="playAnsage('Neureut Bärenweg')">Neureut Bärenweg</button>
+    <button onclick="playAnsage('Neureut Adolf-Ehrmann-Bad')">Neureut Adolf-Ehrmann-Bad</button>
+    <button onclick="playAnsage('Neureut Kirchfeld')">Neureut Kirchfeld</button>
+    <button onclick="playAnsage('Neureut Kirchfeld (Fahrtende)')">Neureut Kirchfeld (Fahrtende)</button>
+    <button onclick="playAnsage('Eggenstein Süd')">Eggenstein Süd</button>
+    <button onclick="playAnsage('Eggenstein')">Eggenstein</button>
+    <button onclick="playAnsage('Eggenstein Spöcker Weg')">Eggenstein Spöcker Weg</button>
+    <button onclick="playAnsage('Eggenstein Schweriner Straße')">Eggenstein Schweriner Straße</button>
+    <button onclick="playAnsage('Leopoldshafen Viermorgen')">Leopoldshafen Viermorgen</button>
+    <button onclick="playAnsage('Leopoldshafen Leopoldstraße')">Leopoldshafen Leopoldstraße</button>
+    <button onclick="playAnsage('Leopoldshafen Frankfurter Straße')">Leopoldshafen Frankfurter Straße</button>
+    <button onclick="playAnsage('Linkenheim Süd (Bedarf)')">Linkenheim Süd (Bedarf)</button>
+    <button onclick="playAnsage('Linkenheim Friedrichstraße')">Linkenheim Friedrichstraße</button>
+    <button onclick="playAnsage('Linkenheim Rathaus')">Linkenheim Rathaus</button>
+    <button onclick="playAnsage('Linkenheim Schulzentrum')">Linkenheim Schulzentrum</button>
+    <button onclick="playAnsage('Linkenheim Grenzstraße')">Linkenheim Grenzstraße</button>
+    <button onclick="playAnsage('Hochstetten Altenheim (Bedarf)')">Hochstetten Altenheim (Bedarf)</button>
+    <button onclick="playAnsage('Hochstetten (Fahrtende)')">Hochstetten (Fahrtende)</button>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+
+    <p style="color:gray; margin-top:20px;">Karlsruhe Hauptbahnhof bald verfübar!</p>
+
+  </div>
+
+
+  <!-- S7 -->
+  <div id="s7" class="container" style="display:none; background-color:#FF9800; color:#fff;">
+    <h2>🚧 S7 (AVG) Ansagen</h2>
+    <p>Im Bau – bald verfügbar!</p>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+  </div>
+
+  <!-- S8 -->
+  <div id="s8" class="container" style="display:none; background-color:#FF9800; color:#fff;">
+    <h2>🚧 S8 (AVG) Ansagen</h2>
+    <p>Im Bau – bald verfügbar!</p>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+  </div>
+
+  <!-- RE14b -->
+  <div id="re14b" class="container" style="display:none; background-color:#FF9800; color:#fff;">
+    <h2>🚧 RE14b (DB Regio) Ansagen</h2>
+    <p>Im Bau – bald verfügbar!</p>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+  </div>
+
+  <!-- RE40 -->
+  <div id="re40" class="container" style="display:none; background-color:#FF9800; color:#fff;">
+    <h2>🚧 RE40 (DB Regio) Ansagen</h2>
+    <p>Im Bau – bald verfügbar!</p>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+  </div>
+
+  <!-- RE76 -->
+  <div id="re76" class="container" style="display:none; background-color:#FF9800; color:#fff;">
+    <h2>🚧 RE76 (HHB) Ansagen</h2>
+    <p>Im Bau – bald verfügbar!</p>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+  </div>
+
+  <!-- S11 -->
+<div id="s11" class="container" style="display:none; background-color:#FFF3E0;">
+    <h2>🚧 S11 (AVG) Ansagen</h2>
+    <p style="color:#E65100;"><b>Im Bau – einige Ansagen bereits verfügbar!</b></p>
+
+    <h3>Verfügbare Ansagen</h3>
+    <button onclick="playAnsage('Begrüßung')">Begrüßung</button>
+
+    <button onclick="playAnsage('Ettlingen Spinnerei')">Ettlingen Spinnerei</button>
+    <button onclick="playAnsage('Ettlingen Albgaubad')">Ettlingen Albgaubad</button>
+    <button onclick="playAnsage('Ettlingen Albgaubad (Fahrtende)')">Ettlingen Albgaubad (Fahrtende)</button>
+    <button onclick="playAnsage('Ettlingen Stadt')">Ettlingen Stadt</button>
+    <button onclick="playAnsage('Ettlingen Erbprinz')">Ettlingen Erbprinz</button>
+    <button onclick="playAnsage('Ettlingen Wasen (Normal)')">Ettlingen Wasen (Normal)</button>
+    <button onclick="playAnsage('Ettlingen Wasen (Zugverband)')">Ettlingen Wasen (Ausstieg 1. Fz)</button>
+    <button onclick="playAnsage('Ettlingen Neuwiesenreben (Bedarf)')">Ettlingen Neuwiesenreben (Bedarf)</button>
+    <button onclick="playAnsage('Rüpurr Battstraße')">Rüpurr Battstraße</button>
+    <button onclick="playAnsage('Rüpurr Tulpenstraße')">Rüpurr Tulpenstraße</button>
+    <button onclick="playAnsage('Rüpurr Ostendorfplatz')">Rüpurr Ostendorfplatz</button>
+    <button onclick="playAnsage('Schloss Rüpurr')">Schloss Rüpurr</button>
+    <button onclick="playAnsage('Dammerstock')">Dammerstock</button>
+    <button onclick="playAnsage('KA Albtalbahnhof (S1 Stadteinwärts)')">Albtalbahnhof (Stadteinwärts)</button>
+    <button onclick="playAnsage('KA Albtalbahnhof (S1)')">Albtalbahnhof</button>
+    <p>Hauptbahnhof🚧</p>
+    <button onclick="playAnsage('Poststraße (S1)')">Poststraße</button>
+    <button onclick="playAnsage('Augartenstraße')">Augartenstraße</button>
+    <button onclick="playAnsage('Kongresszentrum')">Kongresszentrum</button>
+    <button onclick="playAnsage('Ettlinger Tor (S1)')">Ettlinger Tor/Staatstheater</button>
+    <button onclick="playAnsage('Marktplatz (P) (S1)')">Marktplatz Pyramide</button>
+    <button onclick="playAnsage('Marktplatz (K) (S1)')">Marktplatz Kaiserstraße</button>
+    <button onclick="playAnsage('Euro (S5)')">Europaplatz</button>
+    <button onclick="playAnsage('Mühlburger Tor (S5)')">Mühlburger Tor</button>
+    <button onclick="playAnsage('Yorckstraße (S1)')">Yorckstraße</button>
+    <button onclick="playAnsage('Moltkestraße (S1)')">Moltkestraße/Städt. Klinikum</button>
+    <button onclick="playAnsage('Knielinger Allee')">Knielinger Allee/Städt. Klinikum</button>
+    <button onclick="playAnsage('August-Bebel-Straße')">August-Bebel-Straße</button>
+    <button onclick="playAnsage('Kurt-Schuhmacher-Straße')">Kurt-Schuhmacher-Straße</button>
+    <button onclick="playAnsage('Haus Bethlehem')">Haus Bethlehem</button>
+    <button onclick="playAnsage('Neureut Welschneureuter Straße')">Neureut Welschneureuter Straße</button>
+    <button onclick="playAnsage('Neureut Bärenweg')">Neureut Bärenweg</button>
+    <button onclick="playAnsage('Neureut Adolf-Ehrmann-Bad')">Neureut Adolf-Ehrmann-Bad</button>
+    <button onclick="playAnsage('Neureut Kirchfeld')">Neureut Kirchfeld</button>
+    <button onclick="playAnsage('Neureut Kirchfeld (Fahrtende)')">Neureut Kirchfeld (Fahrtende)</button>
+    <button onclick="playAnsage('Eggenstein Süd')">Eggenstein Süd</button>
+    <button onclick="playAnsage('Eggenstein')">Eggenstein</button>
+    <button onclick="playAnsage('Eggenstein Spöcker Weg')">Eggenstein Spöcker Weg</button>
+    <button onclick="playAnsage('Eggenstein Schweriner Straße')">Eggenstein Schweriner Straße</button>
+    <button onclick="playAnsage('Leopoldshafen Viermorgen')">Leopoldshafen Viermorgen</button>
+    <button onclick="playAnsage('Leopoldshafen Leopoldstraße')">Leopoldshafen Leopoldstraße</button>
+    <button onclick="playAnsage('Leopoldshafen Frankfurter Straße')">Leopoldshafen Frankfurter Straße</button>
+    <button onclick="playAnsage('Linkenheim Süd (Bedarf)')">Linkenheim Süd (Bedarf)</button>
+    <button onclick="playAnsage('Linkenheim Friedrichstraße')">Linkenheim Friedrichstraße</button>
+    <button onclick="playAnsage('Linkenheim Rathaus')">Linkenheim Rathaus</button>
+    <button onclick="playAnsage('Linkenheim Schulzentrum')">Linkenheim Schulzentrum</button>
+    <button onclick="playAnsage('Linkenheim Grenzstraße')">Linkenheim Grenzstraße</button>
+    <button onclick="playAnsage('Hochstetten Altenheim (Bedarf)')">Hochstetten Altenheim (Bedarf)</button>
+    <button onclick="playAnsage('Hochstetten (Fahrtende)')">Hochstetten (Fahrtende)</button>
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+
+    <p style="color:gray; margin-top:20px;">Karlsruhe Hauptbahnhof und weiter Haltestellen bald verfübar!</p>
+
+  </div>
+
+  <!-- S3 -->
+  <div id="s3" class="container" style="display:none; background-color:#C084FF; color:#fff;">
+    <h2>🚧 S3 (S-Bahn RN) [BETA] Ansagen</h2>
+    <p>Im Bau – bald verfügbar!</p>
+
+<div class="label">Karlsruhe Hauptbahnhof</div>
+<button onclick="playAnsage('Hbf Begrüßung -MA')">Ziel Mannheim</button>
+<button onclick="playAnsage('Hbf Begrüßung -GER-KA')">Ziel Karlsruhe über Germersheim</button>
+
+<div class="label">Karlsruhe-Durlach</div>
+<button>Noch nichts..</button>
+
+    <button class="back-button" onclick="backToMenu()">← Zurück</button>
+  </div>
+
+<script>
+function updateCountdowns() {
+  const rows = document.querySelectorAll("#fahrplan tbody tr");
+  const now = new Date();
+  
+  rows.forEach(row => {
+    const abfahrtStr = row.cells[2].innerText;
+    const [h, m] = abfahrtStr.split(":");
+    const abfahrt = new Date();
+    abfahrt.setHours(h, m, 0, 0);
+    if (abfahrt < now) abfahrt.setDate(abfahrt.getDate() + 1);
+    
+    const diff = abfahrt - now;
+    const min = Math.floor(diff / 60000);
+    const sec = Math.floor((diff % 60000) / 1000);
+    row.cells[3].innerText = `${min} min ${sec}s`;
+  });
+}
+setInterval(updateCountdowns, 1000);
+updateCountdowns();
+</script>
+
+<div class="credits">
+  <p><b>Kommentare: </b>S1: Hbf noch nicht verfügbar. S6 verzögert sich weiterhin!</p>
+  <p><b>Kontakt: </b>leonardklinger@outlook.de</p>
+</div>
+
+  <footer>
+    &copy; 2025 Leonard Klinger – Alle Rechte vorbehalten.
+  </footer>
+
+  <audio id="gong" src="./avg-gong1.mp3"></audio>
+  <audio id="audio"></audio>
+
+  <script>
+    document.body.addEventListener("click", () => {
+      const gong = document.getElementById("gong");
+      gong.play().then(() => gong.pause());
+    }, { once: true });
+
+    function playAnsage(name) {
+      const gong = document.getElementById("gong");
+      const audio = document.getElementById("audio");
+
+      gong.currentTime = 0;
+      gong.play().then(() => {
+        gong.onended = () => {
+          audio.src = "./" + name + ".mp3";
+          audio.play().catch(err => console.log("Fehler beim Abspielen:", err));
+        };
+      }).catch(err => console.log("Fehler beim Gong:", err));
+    }
+
+    function showSection(id) {
+      document.querySelectorAll(".container").forEach(div => div.style.display = "none");
+      document.getElementById(id).style.display = "block";
+    }
+
+    function backToMenu() {
+      document.querySelectorAll(".container").forEach(div => div.style.display = "none");
+      document.getElementById("main-menu").style.display = "block";
+    }
+  </script>
+
+<!-- 🚀 Erweiterte Funktionen: Filter, Animation, Auto-Ansage, Alarm, Ereignisplaner -->
+<style>
+  /* ===== Button-Animation ===== */
+  button.playing {
+    animation: pulse 0.4s ease;
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); background-color: #4CAF50; }
+    50% { transform: scale(1.1); background-color: #81C784; }
+    100% { transform: scale(1); background-color: #4CAF50; }
+  }
+
+  /* ===== Ereignisplaner-Styling ===== */
+  #ereignisListe {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+  }
+</style>
+
+<div class="container" style="margin-top:40px;">
+  <h2>⚙️ Erweiterte Funktionen</h2>
+
+  <!-- 🔹 Filter -->
+  <label for="linienFilter">Linie filtern:</label>
+  <select id="linienFilter" onchange="filterLinien()" style="padding:8px; font-size:16px; border-radius:6px;">
+    <option value="alle">Alle Linien</option>
+    <option value="s1">S1</option>
+    <option value="s5">S5</option>
+    <option value="s6">S6</option>
+    <option value="s31">S31</option>
+    <option value="s32">S32</option>
+  </select>
+
+  <hr>
+
+  <!-- 🔹 Automatische Ansage -->
+  <h3>🕒 Automatische Ansage</h3>
+  <input id="autoAnsageName" placeholder="Ansagenname (z. B. Begrüßung)" style="padding:8px; width:60%;">
+  <input id="autoAnsageZeit" type="number" placeholder="Sekunden" min="1" style="padding:8px; width:20%;">
+  <button onclick="startAutoAnsage()">Starten</button>
+
+<script>
+  /* ========================================
+     1️⃣ Filter-Funktion
+  ======================================== */
+  function filterLinien() {
+    const linie = document.getElementById("linienFilter").value;
+    const buttons = document.querySelectorAll("#main-menu button");
+
+    buttons.forEach(btn => {
+      if (linie === "alle" || btn.textContent.includes(linie.toUpperCase())) {
+        btn.style.display = "block";
+      } else {
+        btn.style.display = "none";
+      }
+    });
+  }
+
+  /* ========================================
+     2️⃣ Animation bei Klick
+  ======================================== */
+  const originalPlayAnsage = playAnsage;
+  playAnsage = function(datei, element) {
+    if (element) {
+      element.classList.add("playing");
+      setTimeout(() => element.classList.remove("playing"), 400);
+    }
+    originalPlayAnsage(datei);
+  }
+
+  /* ========================================
+     3️⃣ Automatische Ansage
+  ======================================== */
+  function startAutoAnsage() {
+    const name = document.getElementById("autoAnsageName").value.trim();
+    const zeit = parseInt(document.getElementById("autoAnsageZeit").value);
+
+    if (!name || isNaN(zeit)) {
+      alert("Bitte Ansagenname und Zeit eingeben!");
+      return;
+    }
+
+    alert(`Spielt "${name}" in ${zeit} Sekunden automatisch ab.`);
+    setTimeout(() => playAnsage(name, document.body), zeit * 1000);
+  }
+
+  setInterval(checkEvents, 60000); // prüft jede Minute
+  renderEvents();
+</script>
+
+</body>
+</html>
